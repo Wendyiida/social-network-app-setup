@@ -118,24 +118,6 @@ background: linear-gradient(135deg, hsl(var(--social-green)) 0%, hsl(var(--socia
 }
 
 .gradient-hero {
-background: linear-gradient(135deg, hsl(var(--social-blue) / 0.1) 0%, hsl(var(--social-purple) / 0.1) 100%);
+  background: linear-gradient(135deg, hsl(var(--social-blue) / 0.1) 0%, hsl(var(--social-purple) / 0.1) 100%);
 }
-}
-null
-null
-null
-null
-null
-null
-null
-null
-null
-null
-null
-null
-null
-null
-null
-null
-null
 null
