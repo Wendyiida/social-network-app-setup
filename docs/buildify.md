@@ -53,10 +53,11 @@
 - **Estimated effort**: 800 tokens
 
 ### Phase 2: Authentication System (Priority: High)
-- [ ] Implement Supabase auth with phone number support
-- [ ] Add password recovery flow
-- [ ] Create user onboarding process
-- [ ] Set up user profiles table
+- [ ] **Task 2.1**: Set up Supabase database schema for users and profiles
+- [ ] **Task 2.2**: Create Supabase client configuration and auth context
+- [ ] **Task 2.3**: Implement phone number and email authentication flows
+- [ ] **Task 2.4**: Build user onboarding and profile setup process
+- [ ] **Task 2.5**: Add password recovery and account management
 - **Estimated effort**: 1200 tokens
 
 ### Phase 3: Profile Management (Priority: High)
