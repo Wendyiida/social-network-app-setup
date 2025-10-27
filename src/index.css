@@ -106,6 +106,26 @@
     @apply bg-background text-foreground;
     min-height: 100vh;
   }
+
+/* Mobile viewport and safe area handling */
+@supports (padding: max(0px)) {
+.safe-area-inset-bottom {
+padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+html {
+-webkit-text-size-adjust: 100%;
+-webkit-tap-highlight-color: transparent;
+}
+
+body {
+overscroll-behavior: none;
+-webkit-overflow-scrolling: touch;
+}
+}
 }
 
 @layer components {
