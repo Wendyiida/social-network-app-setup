@@ -68,19 +68,20 @@
 - [ ] **Task 3.5**: Create profile display component
 - **Estimated effort**: 1200 tokens
 
-### Phase 4: Group Management (Priority: Medium)
-- [ ] Group creation and management
-- [ ] Member invitation system
-- [ ] Group privacy settings
-- [ ] Admin/moderator roles
-- **Estimated effort**: 1400 tokens
-
-### Phase 5: Social Features (Priority: Medium)
-- [ ] Friend request system
-- [ ] Block/unblock functionality
-- [ ] User search and discovery
-- [ ] Privacy controls implementation
+### Phase 4: Social Features (Priority: Medium)
+- [ ] **Task 4.1**: Create social relationship types and database schema
+- [ ] **Task 4.2**: Implement friend request system
+- [ ] **Task 4.3**: Build block/unblock functionality
+- [ ] **Task 4.4**: Create user search and discovery interface
+- [ ] **Task 4.5**: Add privacy controls for social interactions
 - **Estimated effort**: 1200 tokens
+
+### Phase 5: Group Management (Priority: Medium)
+- [ ] **Task 5.1**: Create group types and database schema
+- [ ] **Task 5.2**: Build group creation and management interface
+- [ ] **Task 5.3**: Implement member invitation system
+- [ ] **Task 5.4**: Add group privacy settings and admin roles
+- **Estimated effort**: 1400 tokens
 
 ### Phase 6: Messaging System (Priority: Medium)
 - [ ] Real-time messaging with Supabase

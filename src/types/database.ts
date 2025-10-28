@@ -90,6 +90,55 @@ export interface Database {
           updated_at?: string;
         };
       };
+      friendships: {
+        Row: {
+          id: string;
+          requester_id: string;
+          addressee_id: string;
+          status: 'pending' | 'accepted' | 'declined' | 'blocked';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          requester_id: string;
+          addressee_id: string;
+          status?: 'pending' | 'accepted' | 'declined' | 'blocked';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          requester_id?: string;
+          addressee_id?: string;
+          status?: 'pending' | 'accepted' | 'declined' | 'blocked';
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      blocks: {
+        Row: {
+          id: string;
+          blocker_id: string;
+          blocked_id: string;
+          reason: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          blocker_id: string;
+          blocked_id: string;
+          reason?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          blocker_id?: string;
+          blocked_id?: string;
+          reason?: string | null;
+          created_at?: string;
+        };
+      };
     };
     Views: {
       [_ in never]: never;
@@ -100,6 +149,7 @@ export interface Database {
     Enums: {
       location_sharing_level: 'nobody' | 'public' | 'friends' | 'groups' | 'custom';
       profile_visibility: 'public' | 'friends' | 'private';
+      friendship_status: 'pending' | 'accepted' | 'declined' | 'blocked';
     };
   };
 }
