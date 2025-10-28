@@ -61,11 +61,12 @@
 - **Estimated effort**: 1200 tokens
 
 ### Phase 3: Profile Management (Priority: High)
-- [ ] Profile editing interface
-- [ ] Image upload with Supabase storage
-- [ ] Privacy settings for location sharing
-- [ ] Username and bio management
-- **Estimated effort**: 1000 tokens
+- [x] **Task 3.1**: Create profile types and interfaces
+- [ ] **Task 3.2**: Build profile editing form component
+- [ ] **Task 3.3**: Implement image upload with Supabase storage
+- [ ] **Task 3.4**: Add privacy settings for location sharing
+- [ ] **Task 3.5**: Create profile display component
+- **Estimated effort**: 1200 tokens
 
 ### Phase 4: Group Management (Priority: Medium)
 - [ ] Group creation and management
