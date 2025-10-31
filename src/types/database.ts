@@ -56,7 +56,9 @@ export const COLLECTIONS = {
   FRIENDSHIPS: 'friendships',
   BLOCKS: 'blocks',
   CONVERSATIONS: 'conversations',
-  MESSAGES: 'messages',
+  MESSAGES: 'messages', // Subcollection under conversations
+  CONVERSATION_PARTICIPANTS: 'conversationParticipants',
+  TYPING_INDICATORS: 'typingIndicators',
   USER_LOCATIONS: 'userLocations',
   LOCATION_PERMISSIONS: 'locationPermissions',
   GROUPS: 'groups',

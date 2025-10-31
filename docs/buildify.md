@@ -85,9 +85,9 @@
 - **Estimated effort**: 1200 tokens
 
 ### Phase 5: Real-time Messaging System (Priority: High)
-- [ ] **Task 5.1**: Create messaging database schema (messages, conversations, participants tables)
-- [ ] **Task 5.2**: Define TypeScript types and interfaces for messaging
-- [ ] **Task 5.3**: Build messaging hooks with real-time Supabase subscriptions
+- [x] **Task 5.1**: Create messaging database schema (messages, conversations, participants tables)
+- [x] **Task 5.2**: Define TypeScript types and interfaces for messaging
+- [x] **Task 5.3**: Build messaging hooks with real-time Firestore subscriptions
 - [ ] **Task 5.4**: Create conversation list UI component
 - [ ] **Task 5.5**: Build chat interface with message bubbles and input
 - [ ] **Task 5.6**: Implement message sending and real-time updates
