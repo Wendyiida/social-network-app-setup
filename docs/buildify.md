@@ -76,33 +76,65 @@
 - [ ] **Task 4.5**: Add privacy controls for social interactions
 - **Estimated effort**: 1200 tokens
 
-### Phase 5: Group Management (Priority: Medium)
-- [ ] **Task 5.1**: Create group types and database schema
-- [ ] **Task 5.2**: Build group creation and management interface
-- [ ] **Task 5.3**: Implement member invitation system
-- [ ] **Task 5.4**: Add group privacy settings and admin roles
-- **Estimated effort**: 1400 tokens
+### Phase 5: Real-time Messaging System (Priority: High)
+- [ ] **Task 5.1**: Create messaging database schema (messages, conversations, participants tables)
+- [ ] **Task 5.2**: Define TypeScript types and interfaces for messaging
+- [ ] **Task 5.3**: Build messaging hooks with real-time Supabase subscriptions
+- [ ] **Task 5.4**: Create conversation list UI component
+- [ ] **Task 5.5**: Build chat interface with message bubbles and input
+- [ ] **Task 5.6**: Implement message sending and real-time updates
+- [ ] **Task 5.7**: Add message pagination and infinite scroll
+- [ ] **Task 5.8**: Create typing indicators and read receipts
+- [ ] **Task 5.9**: Implement group chat functionality
+- [ ] **Task 5.10**: Add message search and filtering
 
-### Phase 6: Messaging System (Priority: Medium)
-- [ ] Real-time messaging with Supabase
-- [ ] Group chat functionality
-- [ ] Message history and pagination
-- [ ] Typing indicators and read receipts
-- **Estimated effort**: 1600 tokens
+### Phase 6: Location Sharing System (Priority: High)
+- [ ] **Task 6.1**: Create location database schema with privacy controls
+- [ ] **Task 6.2**: Define location types and privacy level interfaces
+- [ ] **Task 6.3**: Integrate browser Geolocation API
+- [ ] **Task 6.4**: Build location permission and settings UI
+- [ ] **Task 6.5**: Implement granular privacy controls (nobody, public, friends, groups, custom)
+- [ ] **Task 6.6**: Create location update hook with background sync
+- [ ] **Task 6.7**: Build map view component with user markers
+- [ ] **Task 6.8**: Implement nearby users discovery with distance calculation
+- [ ] **Task 6.9**: Add location sharing toggle and status indicator
+- [ ] **Task 6.10**: Create location history and tracking features
 
-### Phase 7: Location Features (Priority: Medium)
-- [ ] Geolocation integration
-- [ ] Map view with user positions
-- [ ] Location privacy controls
-- [ ] Nearby users discovery
-- **Estimated effort**: 1000 tokens
+### Phase 7: Group Management (Priority: Medium)
+- [ ] **Task 7.1**: Create groups database schema (groups, members, roles, invitations)
+- [ ] **Task 7.2**: Define group types and permission interfaces
+- [ ] **Task 7.3**: Build group creation form with settings
+- [ ] **Task 7.4**: Implement group discovery and search
+- [ ] **Task 7.5**: Create group member management UI
+- [ ] **Task 7.6**: Add role-based permissions (admin, moderator, member)
+- [ ] **Task 7.7**: Build group invitation system
+- [ ] **Task 7.8**: Implement group chat integration
+- [ ] **Task 7.9**: Add group location sharing features
+- [ ] **Task 7.10**: Create group settings and privacy controls
 
-### Phase 8: Advanced Features (Priority: Low)
-- [ ] Business directory integration
-- [ ] Event creation and management
-- [ ] Push notifications setup
-- [ ] Advanced search filters
-- **Estimated effort**: 1800 tokens
+### Phase 8: Business Directory Integration (Priority: Medium)
+- [ ] **Task 8.1**: Create business database schema (businesses, categories, reviews, hours)
+- [ ] **Task 8.2**: Define business types and category interfaces
+- [ ] **Task 8.3**: Build business profile creation and editing
+- [ ] **Task 8.4**: Implement business search with filters (category, distance, rating)
+- [ ] **Task 8.5**: Create business listing card component
+- [ ] **Task 8.6**: Build business detail page with map integration
+- [ ] **Task 8.7**: Add business reviews and ratings system
+- [ ] **Task 8.8**: Implement business hours and availability
+- [ ] **Task 8.9**: Create business-to-user messaging
+- [ ] **Task 8.10**: Add business analytics dashboard
+
+### Phase 9: Push Notifications (Priority: Low)
+- [ ] **Task 9.1**: Set up service worker for PWA
+- [ ] **Task 9.2**: Implement notification permission request flow
+- [ ] **Task 9.3**: Create notification preferences UI
+- [ ] **Task 9.4**: Build Supabase edge function for push notifications
+- [ ] **Task 9.5**: Integrate with browser Push API
+- [ ] **Task 9.6**: Add notification triggers (new message, friend request, location alert)
+- [ ] **Task 9.7**: Implement notification history and management
+- [ ] **Task 9.8**: Create notification sound and vibration settings
+- [ ] **Task 9.9**: Add notification batching and throttling
+- [ ] **Task 9.10**: Build notification analytics and delivery tracking
 
 ## Discussions
 
@@ -133,10 +165,92 @@ Need to design efficient schema for:
 - Optimize image uploads with compression
 - Implement lazy loading for large lists
 
+### Real-time Messaging Architecture
+**Database Design:**
+- `conversations` table: conversation metadata, type (direct/group), participants
+- `messages` table: message content, sender, conversation_id, timestamps, read status
+- `conversation_participants` table: user-conversation relationships with last_read timestamp
+- Use Supabase Realtime for instant message delivery
+
+**Performance Optimizations:**
+- Paginate messages (20-50 per page) with infinite scroll
+- Cache conversations list with React Query
+- Optimistic UI updates for sent messages
+- Debounce typing indicators (500ms)
+- Index on conversation_id and created_at for fast queries
+
+**Security:**
+- Row Level Security (RLS) policies to ensure users only see their conversations
+- Validate message length and content on server side
+- Rate limiting on message sending (edge function)
+
+### Location Sharing Architecture
+**Database Design:**
+- `user_locations` table: user_id, latitude, longitude, accuracy, updated_at
+- `location_permissions` table: granular permissions per user (who can see their location)
+- Privacy levels stored in profile_privacy table (already exists)
+
+**Geolocation Strategy:**
+- Use browser Geolocation API with high accuracy mode
+- Update location every 30 seconds when app is active
+- Background sync when app is in background (service worker)
+- Calculate distance using Haversine formula (Postgres function)
+
+**Privacy Implementation:**
+- Five privacy levels: nobody, public, friends, groups, custom
+- Custom level allows selecting specific users/groups
+- Real-time location updates only sent to authorized users
+- Location history retention: 7 days max
+
+**Map Integration:**
+- Use Leaflet.js or Mapbox GL for map rendering
+- Cluster nearby users for better performance
+- Show user avatars as map markers
+- Real-time marker updates via Supabase subscriptions
+
+### Business Directory Architecture
+**Database Design:**
+- `businesses` table: name, description, category, owner_id, location (geography type)
+- `business_categories` table: category hierarchy
+- `business_hours` table: operating hours per day
+- `business_reviews` table: ratings, comments, user_id
+- `business_photos` table: photo URLs in Supabase Storage
+
+**Search & Discovery:**
+- Full-text search on business name and description
+- Filter by category, distance, rating, open now
+- Sort by distance, rating, newest
+- Use PostGIS for geospatial queries (within radius)
+
+**Integration Points:**
+- Link businesses to map view (show on location map)
+- Allow messaging business owners
+- Show businesses in nearby discovery feed
+- Business analytics: views, messages, reviews
+
+### Push Notifications Architecture
+**PWA Setup:**
+- Service worker for offline support and push handling
+- Web App Manifest for installability
+- Cache static assets for offline access
+
+**Notification System:**
+- Supabase edge function to send push notifications
+- Store push subscriptions in database
+- Notification types: new message, friend request, location alert, business update
+- User preferences for each notification type
+
+**Implementation:**
+- Request permission on first app load
+- Subscribe to push service (FCM or native browser)
+- Store subscription endpoint in database
+- Edge function triggers on database events (new message, etc.)
+- Batch notifications to avoid spam
+
 ## Next Steps
 
-1. **Immediate Priority**: Fix mobile navigation to match screenshot
-2. **Database Setup**: Create core tables for users, groups, messages
-3. **Authentication**: Implement phone number registration
-4. **Profile System**: Build comprehensive profile management
-5. **Social Features**: Add friend/block functionality
+1. **Phase 5 Priority**: Start with messaging database schema and types
+2. **Phase 6 Priority**: Implement location tracking after messaging is functional
+3. **Phase 7 Priority**: Build group management to enable group messaging and location sharing
+4. **Phase 8 Priority**: Add business directory once location features are complete
+5. **Phase 9 Priority**: Implement push notifications last as enhancement layer
