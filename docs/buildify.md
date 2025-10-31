@@ -69,8 +69,8 @@
 - **Estimated effort**: 1200 tokens
 
 ### Phase 4: Social Features (Priority: Medium)
-- [ ] **Task 4.1**: Create social relationship types and database schema
-- [ ] **Task 4.2**: Implement friend request system
+- [x] **Task 4.1**: Create social relationship types and database schema
+- [x] **Task 4.2**: Implement friend request system
 - [ ] **Task 4.3**: Build block/unblock functionality
 - [ ] **Task 4.4**: Create user search and discovery interface
 - [ ] **Task 4.5**: Add privacy controls for social interactions
