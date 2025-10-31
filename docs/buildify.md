@@ -15,12 +15,12 @@
 
 ### Technical Requirements
 - React + TypeScript + Vite
-- Supabase backend (auth, database, storage)
+- Firebase backend (auth, Firestore, storage, FCM)
 - Mobile-responsive design with bottom navigation
-- Real-time subscriptions for messaging
+- Real-time subscriptions for messaging via Firestore
 - Image upload and optimization
 - Geolocation services
-- Push notifications (future)
+- Push notifications via Firebase Cloud Messaging
 
 ## Design
 
@@ -45,6 +45,16 @@
 
 ## Tasks
 
+### Phase 0: Firebase Migration (Priority: CRITICAL) - COMPLETED
+- [x] **Task 0.1**: Install Firebase SDK packages and update package.json
+- [x] **Task 0.2**: Replace Supabase client with Firebase configuration
+- [x] **Task 0.3**: Update database types for Firestore data model
+- [x] **Task 0.4**: Migrate authentication hooks to Firebase Auth
+- [x] **Task 0.5**: Update social hooks to use Firestore queries
+- [x] **Task 0.6**: Replace Supabase storage with Firebase Storage
+- [x] **Task 0.7**: Update all components using Supabase references
+- [x] **Task 0.8**: Remove Supabase dependencies from package.json
+
 ### Phase 1: Mobile Navigation & Core UI (Priority: High) - COMPLETED
 - [x] Fix mobile navigation layout and sizing
 - [x] Implement bottom tab navigation matching screenshot
@@ -53,20 +63,18 @@
 - **Estimated effort**: 800 tokens
 
 ### Phase 2: Authentication System (Priority: High)
-- [ ] **Task 2.1**: Set up Supabase database schema for users and profiles
-- [ ] **Task 2.2**: Create Supabase client configuration and auth context
+- [ ] **Task 2.1**: Set up Firestore collections for users and profiles
+- [ ] **Task 2.2**: Create Firebase auth context with user state management
 - [ ] **Task 2.3**: Implement phone number and email authentication flows
 - [ ] **Task 2.4**: Build user onboarding and profile setup process
 - [ ] **Task 2.5**: Add password recovery and account management
-- **Estimated effort**: 1200 tokens
 
 ### Phase 3: Profile Management (Priority: High)
 - [x] **Task 3.1**: Create profile types and interfaces
 - [ ] **Task 3.2**: Build profile editing form component
-- [ ] **Task 3.3**: Implement image upload with Supabase storage
+- [ ] **Task 3.3**: Implement image upload with Firebase Storage
 - [ ] **Task 3.4**: Add privacy settings for location sharing
 - [ ] **Task 3.5**: Create profile display component
-- **Estimated effort**: 1200 tokens
 
 ### Phase 4: Social Features (Priority: Medium)
 - [x] **Task 4.1**: Create social relationship types and database schema
@@ -142,7 +150,7 @@
 Current mobile navigation is not properly sized and positioned. Need to implement a fixed bottom navigation bar that matches the provided screenshot with proper spacing and active states.
 
 ### Authentication Strategy
-Will use Supabase Auth with phone number as primary identifier, but also support email login. Need to implement proper onboarding flow with profile setup.
+Will use Firebase Auth with phone number as primary identifier, but also support email login. Need to implement proper onboarding flow with profile setup. User profiles stored in Firestore with real-time sync.
 
 ### Privacy Architecture
 Location sharing privacy needs granular controls:
@@ -166,61 +174,61 @@ Need to design efficient schema for:
 - Implement lazy loading for large lists
 
 ### Real-time Messaging Architecture
-**Database Design:**
-- `conversations` table: conversation metadata, type (direct/group), participants
-- `messages` table: message content, sender, conversation_id, timestamps, read status
-- `conversation_participants` table: user-conversation relationships with last_read timestamp
-- Use Supabase Realtime for instant message delivery
+**Database Design (Firestore Collections):**
+- `conversations` collection: conversation metadata, type (direct/group), participants array
+- `messages` subcollection: message content, sender, timestamps, read status
+- `conversationParticipants` subcollection: user-conversation relationships with lastRead timestamp
+- Use Firestore real-time listeners for instant message delivery
 
 **Performance Optimizations:**
-- Paginate messages (20-50 per page) with infinite scroll
+- Paginate messages (20-50 per page) with Firestore query cursors
 - Cache conversations list with React Query
 - Optimistic UI updates for sent messages
 - Debounce typing indicators (500ms)
-- Index on conversation_id and created_at for fast queries
+- Composite indexes on conversationId and createdAt for fast queries
 
 **Security:**
-- Row Level Security (RLS) policies to ensure users only see their conversations
-- Validate message length and content on server side
-- Rate limiting on message sending (edge function)
+- Firestore Security Rules to ensure users only see their conversations
+- Validate message length and content in security rules
+- Rate limiting via Firebase App Check
 
 ### Location Sharing Architecture
-**Database Design:**
-- `user_locations` table: user_id, latitude, longitude, accuracy, updated_at
-- `location_permissions` table: granular permissions per user (who can see their location)
-- Privacy levels stored in profile_privacy table (already exists)
+**Database Design (Firestore Collections):**
+- `userLocations` collection: userId, geopoint (lat/lng), accuracy, updatedAt
+- `locationPermissions` collection: granular permissions per user (who can see their location)
+- Privacy levels stored in user profile document
 
 **Geolocation Strategy:**
 - Use browser Geolocation API with high accuracy mode
 - Update location every 30 seconds when app is active
 - Background sync when app is in background (service worker)
-- Calculate distance using Haversine formula (Postgres function)
+- Calculate distance using Firestore GeoPoint and geohash queries
 
 **Privacy Implementation:**
 - Five privacy levels: nobody, public, friends, groups, custom
 - Custom level allows selecting specific users/groups
-- Real-time location updates only sent to authorized users
+- Real-time location updates only sent to authorized users via Firestore listeners
 - Location history retention: 7 days max
 
 **Map Integration:**
 - Use Leaflet.js or Mapbox GL for map rendering
 - Cluster nearby users for better performance
 - Show user avatars as map markers
-- Real-time marker updates via Supabase subscriptions
+- Real-time marker updates via Firestore listeners
 
 ### Business Directory Architecture
-**Database Design:**
-- `businesses` table: name, description, category, owner_id, location (geography type)
-- `business_categories` table: category hierarchy
-- `business_hours` table: operating hours per day
-- `business_reviews` table: ratings, comments, user_id
-- `business_photos` table: photo URLs in Supabase Storage
+**Database Design (Firestore Collections):**
+- `businesses` collection: name, description, category, ownerId, geopoint
+- `businessCategories` collection: category hierarchy
+- `businessHours` subcollection: operating hours per day
+- `businessReviews` subcollection: ratings, comments, userId
+- Business photos stored in Firebase Storage
 
 **Search & Discovery:**
-- Full-text search on business name and description
-- Filter by category, distance, rating, open now
+- Full-text search using Algolia or client-side filtering
+- Filter by category, distance (geohash queries), rating, open now
 - Sort by distance, rating, newest
-- Use PostGIS for geospatial queries (within radius)
+- Use Firestore geohash queries for nearby businesses
 
 **Integration Points:**
 - Link businesses to map view (show on location map)

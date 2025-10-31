@@ -1,134 +1,123 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { UserProfile, ProfilePrivacySettings, ProfileUpdateRequest, PrivacyUpdateRequest } from '@/types/profile';
-import { useToast } from '@/hooks/use-toast';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  updateDoc,
+  doc,
+  onSnapshot,
+  Timestamp
+} from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { COLLECTIONS } from '@/types/database';
+import type { Profile, ProfilePrivacy } from '@/types/database';
+import { useAuth } from '@/contexts/AuthContext';
 
-export function useProfile(userId?: string) {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [privacy, setPrivacy] = useState<ProfilePrivacySettings | null>(null);
+export function useProfile() {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [privacy, setPrivacy] = useState<ProfilePrivacy | null>(null);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
-  const { toast } = useToast();
 
   useEffect(() => {
-    if (userId) {
-      fetchProfile(userId);
-      fetchPrivacySettings(userId);
-    }
-  }, [userId]);
-
-  const fetchProfile = async (id: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', id)
-        .single();
-
-      if (error) throw error;
-      setProfile(data);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger le profil",
-        variant: "destructive",
-      });
-    } finally {
+    if (!user) {
       setLoading(false);
+      return;
     }
+
+    // Subscribe to profile
+    const profileQuery = query(
+      collection(db, COLLECTIONS.PROFILES),
+      where('userId', '==', user.uid)
+    );
+
+    const unsubProfile = onSnapshot(profileQuery, (snapshot) => {
+      if (!snapshot.empty) {
+        const data = snapshot.docs[0].data();
+        setProfile({
+          id: snapshot.docs[0].id,
+          ...data
+        } as Profile);
+      }
+      setLoading(false);
+    });
+
+    // Subscribe to privacy settings
+    const privacyQuery = query(
+      collection(db, COLLECTIONS.PROFILE_PRIVACY),
+      where('userId', '==', user.uid)
+    );
+
+    const unsubPrivacy = onSnapshot(privacyQuery, (snapshot) => {
+      if (!snapshot.empty) {
+        const data = snapshot.docs[0].data();
+        setPrivacy({
+          id: snapshot.docs[0].id,
+          ...data
+        } as ProfilePrivacy);
+      }
+    });
+
+    return () => {
+      unsubProfile();
+      unsubPrivacy();
+    };
+  }, [user]);
+
+  const updateProfile = async (updates: Partial<Profile>) => {
+    if (!profile) throw new Error('No profile found');
+
+    await updateDoc(doc(db, COLLECTIONS.PROFILES, profile.id), {
+      ...updates,
+      updatedAt: Timestamp.now()
+    });
   };
 
-  const fetchPrivacySettings = async (id: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profile_privacy')
-        .select('*')
-        .eq('user_id', id)
-        .single();
+  const updatePrivacy = async (updates: Partial<ProfilePrivacy>) => {
+    if (!privacy) throw new Error('No privacy settings found');
 
-      if (error) throw error;
-      setPrivacy(data);
-    } catch (error) {
-      console.error('Error fetching privacy settings:', error);
-    }
+    await updateDoc(doc(db, COLLECTIONS.PROFILE_PRIVACY, privacy.id), {
+      ...updates,
+      updatedAt: Timestamp.now()
+    });
   };
 
-  const updateProfile = async (updates: ProfileUpdateRequest) => {
-    if (!userId) return false;
+  const createProfile = async (data: Omit<Profile, 'id' | 'createdAt' | 'updatedAt'>) => {
+    if (!user) throw new Error('Not authenticated');
 
-    setUpdating(true);
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ ...updates, updated_at: new Date().toISOString() })
-        .eq('user_id', userId);
+    const profileRef = await addDoc(collection(db, COLLECTIONS.PROFILES), {
+      ...data,
+      userId: user.uid,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    });
 
-      if (error) throw error;
+    // Create default privacy settings
+    await addDoc(collection(db, COLLECTIONS.PROFILE_PRIVACY), {
+      userId: user.uid,
+      locationSharing: 'friends',
+      profileVisibility: 'public',
+      showPhone: false,
+      showEmail: false,
+      showBirthDate: false,
+      allowFriendRequests: true,
+      allowGroupInvites: true,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    });
 
-      await fetchProfile(userId);
-      toast({
-        title: "Succès",
-        description: "Profil mis à jour avec succès",
-      });
-      return true;
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour le profil",
-        variant: "destructive",
-      });
-      return false;
-    } finally {
-      setUpdating(false);
-    }
-  };
-
-  const updatePrivacySettings = async (updates: PrivacyUpdateRequest) => {
-    if (!userId) return false;
-
-    setUpdating(true);
-    try {
-      const { error } = await supabase
-        .from('profile_privacy')
-        .update({ ...updates, updated_at: new Date().toISOString() })
-        .eq('user_id', userId);
-
-      if (error) throw error;
-
-      await fetchPrivacySettings(userId);
-      toast({
-        title: "Succès",
-        description: "Paramètres de confidentialité mis à jour",
-      });
-      return true;
-    } catch (error) {
-      console.error('Error updating privacy settings:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour les paramètres",
-        variant: "destructive",
-      });
-      return false;
-    } finally {
-      setUpdating(false);
-    }
+    return profileRef.id;
   };
 
   return {
     profile,
     privacy,
     loading,
-    updating,
     updateProfile,
-    updatePrivacySettings,
-    refetch: () => {
-      if (userId) {
-        fetchProfile(userId);
-        fetchPrivacySettings(userId);
-      }
-    }
+    updatePrivacy,
+    createProfile
   };
 }
