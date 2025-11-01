@@ -1,8 +1,8 @@
 
 import { useState } from 'react';
 import { ConversationList } from '@/components/messaging/ConversationList';
+import { ChatInterface } from '@/components/messaging/ChatInterface';
 import { NewConversationDialog } from '@/components/messaging/NewConversationDialog';
-import { Card, CardContent } from '@/components/ui/card';
 import { MessageCircle } from 'lucide-react';
 
 export default function Messages() {
@@ -19,6 +19,10 @@ export default function Messages() {
 
   const handleConversationCreated = (conversationId: string) => {
     setSelectedConversationId(conversationId);
+  };
+
+  const handleBack = () => {
+    setSelectedConversationId(undefined);
   };
 
   return (
@@ -41,19 +45,10 @@ export default function Messages() {
         ${selectedConversationId ? 'block' : 'hidden md:flex'}
       `}>
         {selectedConversationId ? (
-          <div className="flex items-center justify-center h-full p-8">
-            <Card className="w-full max-w-md">
-              <CardContent className="pt-6 text-center">
-                <MessageCircle className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">
-                  Interface de chat en cours de développement
-                </p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Conversation ID: {selectedConversationId}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+          <ChatInterface
+            conversationId={selectedConversationId}
+            onBack={handleBack}
+          />
         ) : (
           <div className="hidden md:flex items-center justify-center h-full">
             <div className="text-center">
