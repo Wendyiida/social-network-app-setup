@@ -90,11 +90,13 @@
 - [x] **Task 5.3**: Build messaging hooks with real-time Firestore subscriptions
 - [x] **Task 5.4**: Create conversation list UI component
 - [x] **Task 5.5**: Build chat interface with message bubbles and input
-- [ ] **Task 5.6**: Implement message sending and real-time updates
-- [ ] **Task 5.7**: Add message pagination and infinite scroll
-- [ ] **Task 5.8**: Create typing indicators and read receipts
-- [ ] **Task 5.9**: Implement group chat functionality
-- [ ] **Task 5.10**: Add message search and filtering
+- [x] **Task 5.6**: Message sending and real-time updates (implemented in hooks)
+- [x] **Task 5.7**: Message pagination and infinite scroll (implemented in hooks)
+- [x] **Task 5.8**: Typing indicators and read receipts (implemented in UI)
+- [ ] **Task 5.9**: Test messaging system with Firebase and fix any issues
+- [ ] **Task 5.10**: Add image/file upload to messages
+- [ ] **Task 5.11**: Implement message search and filtering
+- [ ] **Task 5.12**: Add group chat management features (edit name, add/remove members)
 
 ### Phase 6: Location Sharing System (Priority: High)
 - [ ] **Task 6.1**: Create location database schema with privacy controls
