@@ -17,8 +17,9 @@ import Settings from '@/pages/Settings';
 import Auth from '@/pages/Auth';
 import NotFound from '@/pages/NotFound';
 
-// Layout
+// Layout & Protection
 import Layout from '@/components/Layout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,7 +39,7 @@ function App() {
             <div className="min-h-screen bg-background">
               <Routes>
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/" element={<Layout />}>
+                <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
                   <Route index element={<Home />} />
                   <Route path="profile" element={<Profile />} />
                   <Route path="messages" element={<Messages />} />

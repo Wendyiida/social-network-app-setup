@@ -63,11 +63,13 @@
 - **Estimated effort**: 800 tokens
 
 ### Phase 2: Authentication System (Priority: High)
-- [ ] **Task 2.1**: Set up Firestore collections for users and profiles
-- [ ] **Task 2.2**: Create Firebase auth context with user state management
-- [ ] **Task 2.3**: Implement phone number and email authentication flows
-- [ ] **Task 2.4**: Build user onboarding and profile setup process
-- [ ] **Task 2.5**: Add password recovery and account management
+- [x] **Task 2.1**: Set up Firestore collections for users and profiles
+- [x] **Task 2.2**: Create Firebase auth context with user state management
+- [x] **Task 2.3**: Implement email authentication flows with login/register
+- [x] **Task 2.4**: Add password recovery functionality
+- [x] **Task 2.5**: Create protected routes and sign-out functionality
+- [ ] **Task 2.6**: Implement phone number authentication flow
+- [ ] **Task 2.7**: Build user onboarding wizard for new users
 
 ### Phase 3: Profile Management (Priority: High)
 - [x] **Task 3.1**: Create profile types and interfaces
